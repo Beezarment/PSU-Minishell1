@@ -43,31 +43,34 @@ void exit_shell(void)
     exit(EXIT_SUCCESS);
 }
 
-int program(char **arguments, env_var_t *env_list)
+int program(char **arguments, env_var_t **env_list)
 {
     handle_cd_command(arguments);
     handle_exit_command(arguments);
-    handle_setenv_command(arguments, &env_list);
-    handle_env_command(arguments, env_list);
     handle_default_command(arguments);
+    handle_env_command(arguments, env_list);
+    handle_setenv_command(arguments, env_list);
+    handle_unsetenv_command(arguments, env_list);
     return 0;
 }
 
 int main(int argc, char **argv, char **env)
 {
+    env_var_t *env_list = NULL;
     char *line;
     char **arguments;
     int status = 1;
-    env_var_t *env_list = NULL;
 
+    env_init(env, &env_list);
     do {
         my_printf("$> ");
         line = read_line();
         arguments = parse_line(line);
-        program(arguments, env_list);
-        free(line);
+        program(arguments, &env_list);
         free(arguments);
+        free(line);
     } while (status);
     free_env_vars(env_list);
+    free(env_list);
     return EXIT_SUCCESS;
 }

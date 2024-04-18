@@ -14,8 +14,7 @@ char *get_path_environment(void)
     char *path_env = my_getenv("PATH");
 
     if (path_env == NULL) {
-        my_put_stderr("Error: PATH environment variable not found.\n");
-        exit(EXIT_FAILURE);
+        path_env = "/usr/bin:/bin";
     }
     return path_env;
 }

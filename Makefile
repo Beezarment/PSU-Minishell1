@@ -9,22 +9,28 @@ NAME    =  	mysh
 
 SRC     =	./src/main.c						\
 			./src/error.c						\
-			./src/builtins/my_env.c				\
-			./src/builtins/handler.c 			\
-			./src/builtins/execute.c			\
-			./src/builtins/my_setenv.c			\
-			./src/builtins/directory.c			\
-			./src/builtins/execute_helper.c		\
-			./src/builtins/my_setenv_helper.c	\
+			./src/principal/my_env.c			\
+			./src/principal/handler.c 			\
+			./src/principal/execute.c			\
+			./src/helper/env_helper.c			\
+			./src/helper/env_extract.c			\
+			./src/principal/my_setenv.c			\
+			./src/principal/directory.c			\
+			./src/helper/setenv_helper.c 		\
+			./src/principal/my_unsetenv.c       \
+			./src/helper/execute_helper.c		\
 
 FCLEAN_TARGETS = $(NAME) ./lib/libmy.a
 
-CFLAGS  =  	-W -Wall -Wextra
+CFLAGS  =  	-W -Wall -Wextra -g
 
 OBJ     =	$(SRC:.c=.o)
 
 all	:	$(OBJ) build_lib
-		gcc $(OBJ) -o $(NAME) -g -I./includes -L./lib -lmy $(CFLAGS)
+		gcc $(OBJ) -o $(NAME) -I./includes -L./lib -lmy $(CFLAGS)
+
+debug: build_lib
+	gcc -o $(NAME) $(SRC) -I ./includes -L./lib -lmy $(CFLAGS) -ggdb3
 
 build_lib	:
 		make -C ./lib/my

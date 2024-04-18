@@ -7,38 +7,29 @@
 
 #include "../../includes/my.h"
 #include "../../includes/struct.h"
+#include "../../lib/my/include/my_lib.h"
 
 void extract_env(const char *env, char **name, char **value)
 {
-    const char *equal = env;
-    size_t name_length;
+    int i = 0;
 
-    for (; *equal != '\0' && *equal != '='; equal += 1) {
-        if (*equal == '=') {
-            name_length = equal - env;
-            *name = malloc(name_length + 1);
-            my_strncpy(*name, env, name_length);
-            (*name)[name_length] = '\0';
-            *value = my_strdup(equal + 1);
-        } else {
-            *name = NULL;
-            *value = NULL;
-        }
-    }
+    for (; env[i] != '='; i += 1);
+    *name = strndup(env, i);
+    *value = strdup(&env[i + 1]);
 }
 
 void add_env(const char *name, const char *value, env_var_t **env)
 {
     if (name != NULL && value != NULL) {
-       add_env_var(name, value, env);
+        add_env_var(name, value, env);
     }
 }
 
-void init(char **env, env_var_t *env_list)
+void env_init(char **env, env_var_t **env_list)
 {
     char **env_ptr = env;
-    char *name;
-    char *value;
+    char *name = NULL;
+    char *value = NULL;
 
     while (*env_ptr != NULL) {
         free(name);

@@ -11,15 +11,12 @@
 
 int my_env(env_var_t *env_list)
 {
-    env_var_t *current = env_list;
-
-    if (current == NULL) {
+    if (env_list == NULL) {
         my_printf("Environment list is empty.\n");
         return 84;
     }
-    while (current != NULL) {
-        my_printf("%s=%s\n", current->name, current->value);
-        current = current->next;
+    for (; env_list != NULL; env_list = env_list->next) {
+        printf("%s=%s\n", env_list->name, env_list->value);
     }
     return 0;
 }

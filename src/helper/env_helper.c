@@ -36,7 +36,7 @@ env_var_t *create_env_var(const char *name, const char *value)
 void add_env_var(const char *name, const char *value, env_var_t **env_list)
 {
     env_var_t *new_var = create_env_var(name, value);
-    env_var_t *current = *env_list;
+    env_var_t *current;
 
     if (new_var == NULL) {
         my_put_stderr("Failed to create environment variable");
@@ -45,6 +45,7 @@ void add_env_var(const char *name, const char *value, env_var_t **env_list)
     if (*env_list == NULL) {
         *env_list = new_var;
     } else {
+        current = *env_list;
         while (current->next != NULL) {
             current = current->next;
         }
@@ -52,34 +53,12 @@ void add_env_var(const char *name, const char *value, env_var_t **env_list)
     }
 }
 
-void update_env_var(env_var_t *var, const char *value)
-{
-    free(var->value);
-    var->value = my_strdup(value);
-    if (var->value == NULL) {
-        perror("strdup");
-        exit(EXIT_FAILURE);
-    }
-}
-
-env_var_t *find_env_var(const char *name, env_var_t *env_list)
-{
-    env_var_t *current = env_list;
-
-    while (current != NULL) {
-        if (my_strcmp(current->name, name) == 0) {
-            return current;
-        }
-        current = current->next;
-    }
-    return NULL;
-}
-
 void free_env_vars(env_var_t *env_list)
 {
-    env_var_t *temp = env_list;
+    env_var_t *temp;
 
     while (env_list != NULL) {
+        temp = env_list;
         env_list = env_list->next;
         free(temp->name);
         free(temp->value);

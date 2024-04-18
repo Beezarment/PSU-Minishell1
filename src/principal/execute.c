@@ -26,13 +26,14 @@ char *my_getenv(const char *name)
 void execute_command(char **arguments)
 {
     char *command_path = find_command_path(arguments[0]);
-    pid_t pid = create_child_process();
+    pid_t pid;
     int status;
 
     if (command_path == NULL) {
-        my_put_stderr("not found in PATH");
-        exit(EXIT_FAILURE);
+        my_put_stderr("Command not available\n");
+        return;
     }
+    pid = create_child_process();
     arguments[0] = command_path;
     if (pid == 0) {
         exec_command(arguments);
@@ -42,4 +43,16 @@ void execute_command(char **arguments)
             exit(EXIT_FAILURE);
         }
     }
+}
+
+void handle_default_command(char **arguments)
+{
+    if (arguments[0] == NULL)
+        return;
+    if (!(my_strcmp(arguments[0], "cd") == 0 ||
+        my_strcmp(arguments[0], "exit") == 0 ||
+        my_strcmp(arguments[0], "setenv") == 0 ||
+        my_strcmp(arguments[0], "unsetenv") == 0 ||
+        my_strcmp(arguments[0], "env") == 0))
+        execute_command(arguments);
 }
